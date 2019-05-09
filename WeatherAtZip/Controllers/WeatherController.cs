@@ -39,15 +39,12 @@ namespace WeatherAtZip.Controllers
         {
             WeatherData data = new WeatherData();
             try {
-                ObjectResult zipCheck = validateZipcode(zipcode);
-                if (zipCheck != null) {
-                    return zipCheck;
-                }
+                validateZipcode(zipcode);
 
                 data.zipcode = zipcode;
-                await getWeather(zipcode, data);
-                await getTimezone(zipcode, data);
-                await getElevation(zipcode, data);
+                await getWeather(zipcode, data).ConfigureAwait(false);
+                await getTimezone(zipcode, data).ConfigureAwait(false);
+                await getElevation(zipcode, data).ConfigureAwait(false);
             }
             catch (WeatherRestException e) {
                 return e.InternalEntity;
@@ -61,11 +58,7 @@ namespace WeatherAtZip.Controllers
         {
             string weatherApiUri = _config.GetValue<string>("Api:WeatherApi:Url");
             string weatherApiAppId = _config.GetValue<string>("Api:WeatherApi:AppId");
-            ActionResult response = await getFromExternalService(string.Format(weatherApiUri, zipcode, weatherApiAppId));
-
-            //if (response.StatusCode >= 400) {
-            //    throw new WeatherRestException(response);
-            //}
+            ActionResult response = await getFromExternalService(string.Format(weatherApiUri, zipcode, weatherApiAppId)).ConfigureAwait(false);
 
             try {
 
@@ -81,10 +74,6 @@ namespace WeatherAtZip.Controllers
                 throw new WeatherRestException(
                     StatusCode(500, "Error parsing data from temperature server"));
             }
-            //    catch (IOException e) {
-            //        throw new WeatherRestException(
-            //                ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error reading data from temperature server"));
-            //    }
         }
 
 
@@ -100,7 +89,7 @@ namespace WeatherAtZip.Controllers
                 TimeSpan t = DateTime.UtcNow - new DateTime(1970, 1, 1);
                 ActionResult response = await getFromExternalService(
                    string.Format(timezoneApiUri,
-                            data.latitude, data.longitude, (long)t.TotalSeconds, timezoneApiAppId));
+                            data.latitude, data.longitude, (long)t.TotalSeconds, timezoneApiAppId)).ConfigureAwait(false);
 
                 try {
                     JObject root = JObject.Parse((string)(response as JsonResult).Value);
@@ -112,11 +101,6 @@ namespace WeatherAtZip.Controllers
                         StatusCode(500, "Error parsing data from timezone server"));
                 }
             }
-
-            //catch (IOException e) {
-            //    throw new WeatherRestException(
-            //            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error reading data from timezone server"));
-            //}
         }
 
 
@@ -130,7 +114,7 @@ namespace WeatherAtZip.Controllers
             }
             else {
                 ActionResult response = await getFromExternalService(
-                    string.Format(elevationApiUri, data.latitude, data.longitude, elevationApiAppId));
+                    string.Format(elevationApiUri, data.latitude, data.longitude, elevationApiAppId)).ConfigureAwait(false);
                 try {
                     JObject root = JObject.Parse((string)(response as JsonResult).Value);
                     data.elevation = root["results"][0].Value<string>("elevation");
@@ -147,7 +131,7 @@ namespace WeatherAtZip.Controllers
         private async Task<ActionResult> getFromExternalService(string uri)
         {
             string json = string.Empty;
-
+            
             try {
                 using (HttpClient client = new HttpClient()) {
                     client.DefaultRequestHeaders.Accept.Add(
@@ -177,29 +161,26 @@ namespace WeatherAtZip.Controllers
         /// <summary>
         /// Basic checks for valid zip codes
         /// </summary>
-        private ObjectResult validateZipcode(String zipcode)
+        private void validateZipcode(String zipcode)
         {
             if (zipcode == null || zipcode.Length == 0) {
-                return BadRequest("Missing Zip Code");
+                throw new WeatherRestException(BadRequest("Missing Zip Code"));
             }
 
             //* check for out-of-country zips
             foreach (char c in zipcode) {
                 if (!char.IsDigit(c)) {
-                    return BadRequest("Zip Code has invalid characters");
+                    throw new WeatherRestException(BadRequest("Zip Code has invalid characters"));
                 }
             }
 
             if (zipcode.Length < 5) {
-                return BadRequest("Zip Code is too short");
+                throw new WeatherRestException(BadRequest("Zip Code is too short"));
             }
 
             if (zipcode.Length > 5) {
-                return BadRequest("Zip Code is too long");
+                throw new WeatherRestException(BadRequest("Zip Code is too long"));
             }
-
-            return null;
         }
-
     }
 }
