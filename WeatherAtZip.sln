@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.421
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeatherAtZip", "WeatherAtZip.csproj", "{5B3B4682-4B57-417C-AFA2-F07D35DEF70F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeatherAtZip", "WeatherAtZip\WeatherAtZip.csproj", "{5B3B4682-4B57-417C-AFA2-F07D35DEF70F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeatherAtZip.IntegrationTests", "WeatherAtZip.IntegrationTests\WeatherAtZip.IntegrationTests.csproj", "{BE8CBE13-F798-4C2F-A1D7-0656D3173158}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{5B3B4682-4B57-417C-AFA2-F07D35DEF70F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5B3B4682-4B57-417C-AFA2-F07D35DEF70F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5B3B4682-4B57-417C-AFA2-F07D35DEF70F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE8CBE13-F798-4C2F-A1D7-0656D3173158}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE8CBE13-F798-4C2F-A1D7-0656D3173158}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE8CBE13-F798-4C2F-A1D7-0656D3173158}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE8CBE13-F798-4C2F-A1D7-0656D3173158}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
