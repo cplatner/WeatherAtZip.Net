@@ -41,7 +41,7 @@ namespace WeatherAtZip.IntegrationTests
         /// This zip is somewhere in Boston, but the OpenWeatherMap API doesn't seem to support Zip+4.
         /// </summary>
         [Fact]
-        public async Task invalidZip_tooLongZip_failsWithBadRequest()
+        public async Task InvalidZip_tooLongZip_failsWithBadRequest()
         {
             HttpResponseMessage response = await _restClient.GetAsync("/api/weather?zipcode=02129-3011");
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
@@ -51,7 +51,7 @@ namespace WeatherAtZip.IntegrationTests
         /// Post code for London without country identifier.
         /// </summary>
         [Fact]
-        public async Task invalidZip_nonUsZip_failsWithBadRequest()
+        public async Task InvalidZip_nonUsZip_failsWithBadRequest()
         {
             HttpResponseMessage response = await _restClient.GetAsync("/api/weather?zipcode=WC2N+5DU");
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
@@ -61,14 +61,14 @@ namespace WeatherAtZip.IntegrationTests
         /// This test has a zip code that is a valid length, but doesn't exist on the weather server.
         /// </summary>
         [Fact]
-        public async Task invalidZip_zipDoesntExist_failsWithNotFound()
+        public async Task InvalidZip_zipDoesntExist_failsWithNotFound()
         {
             HttpResponseMessage response = await _restClient.GetAsync("/api/weather?zipcode=90000");
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
 
         [Fact]
-        public async Task valid_5DigitZip_succeeds_1()
+        public async Task Valid_5DigitZip_succeeds_1()
         {
             HttpResponseMessage response = await _restClient.GetAsync("/api/weather?zipcode=97006");
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -81,7 +81,7 @@ namespace WeatherAtZip.IntegrationTests
         }
 
         [Fact]
-        public async Task valid_5DigitZip_succeeds_2()
+        public async Task Valid_5DigitZip_succeeds_2()
         {
             //* Somewhere in Boston
             HttpResponseMessage response = await _restClient.GetAsync("/api/weather?zipcode=02129");
