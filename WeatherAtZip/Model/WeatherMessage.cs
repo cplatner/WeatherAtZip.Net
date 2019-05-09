@@ -18,7 +18,7 @@ namespace WeatherAtZip.Model
             this.elevation = double.Parse(weatherData.elevation);
 
             this.message = string.Format(
-                    "At the location %s, the temperature is %.1fF, the timezone is %s, and the elevation is %.1fm",
+                    "At the location {0}, the temperature is {1:F1}F, the timezone is {2}, and the elevation is {3:F1}m",
                     weatherData.city,
                     double.Parse(weatherData.temperature),
                     weatherData.timezone,
