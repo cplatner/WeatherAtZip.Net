@@ -21,11 +21,11 @@ namespace WeatherAtZip.Controllers
         /// <summary>
         /// Cache for timezones, since they don't change between calls
         /// </summary>
-        private Dictionary<string, string> timezonesByZip = new Dictionary<string, string>();
+        private Dictionary<string, string> _timezonesByZip = new Dictionary<string, string>();
         /// <summary>
         /// Cache for elevations, since they don't change between calls
         /// </summary>
-        private readonly Dictionary<string, string> elevationsByZip = new Dictionary<string, string>();
+        private readonly Dictionary<string, string> _elevationsByZip = new Dictionary<string, string>();
 
 
         public WeatherController(ILogger<WeatherController> logger, IConfiguration config)
@@ -41,7 +41,7 @@ namespace WeatherAtZip.Controllers
             try {
                 validateZipcode(zipcode);
 
-                data.zipcode = zipcode;
+                data.Zipcode = zipcode;
                 await getWeather(zipcode, data).ConfigureAwait(false);
                 await getTimezone(zipcode, data).ConfigureAwait(false);
                 await getElevation(zipcode, data).ConfigureAwait(false);
@@ -64,10 +64,10 @@ namespace WeatherAtZip.Controllers
 
                 JObject root = JObject.Parse((string)(response as JsonResult).Value);
 
-                data.temperature = root["main"].Value<string>("temp");
-                data.city = root.Value<string>("name");
-                data.latitude = root["coord"].Value<string>("lat");
-                data.longitude = root["coord"].Value<string>("lon");
+                data.Temperature = root["main"].Value<string>("temp");
+                data.City = root.Value<string>("name");
+                data.Latitude = root["coord"].Value<string>("lat");
+                data.Longitude = root["coord"].Value<string>("lon");
 
             }
             catch (JsonReaderException e) {
@@ -82,19 +82,19 @@ namespace WeatherAtZip.Controllers
             string timezoneApiUri = _config.GetValue<string>("Api:TimezoneApi:Url");
             string timezoneApiAppId = _config.GetValue<string>("Api:TimezoneApi:AppId");
 
-            if (timezonesByZip.ContainsKey(zipcode)) {
-                data.timezone = timezonesByZip[zipcode];
+            if (_timezonesByZip.ContainsKey(zipcode)) {
+                data.Timezone = _timezonesByZip[zipcode];
             }
             else {
                 TimeSpan t = DateTime.UtcNow - new DateTime(1970, 1, 1);
                 ActionResult response = await getFromExternalService(
                    string.Format(timezoneApiUri,
-                            data.latitude, data.longitude, (long)t.TotalSeconds, timezoneApiAppId)).ConfigureAwait(false);
+                            data.Latitude, data.Longitude, (long)t.TotalSeconds, timezoneApiAppId)).ConfigureAwait(false);
 
                 try {
                     JObject root = JObject.Parse((string)(response as JsonResult).Value);
-                    data.timezone = root.Value<string>("timeZoneName");
-                    timezonesByZip[zipcode] = data.timezone;
+                    data.Timezone = root.Value<string>("timeZoneName");
+                    _timezonesByZip[zipcode] = data.Timezone;
                 }
                 catch (JsonReaderException e) {
                     throw new WeatherRestException(
@@ -109,16 +109,16 @@ namespace WeatherAtZip.Controllers
             string elevationApiUri = _config.GetValue<string>("Api:ElevationApi:Url");
             string elevationApiAppId = _config.GetValue<string>("Api:ElevationApi:AppId");
 
-            if (elevationsByZip.ContainsKey(zipcode)) {
-                data.elevation = elevationsByZip[zipcode];
+            if (_elevationsByZip.ContainsKey(zipcode)) {
+                data.Elevation = _elevationsByZip[zipcode];
             }
             else {
                 ActionResult response = await getFromExternalService(
-                    string.Format(elevationApiUri, data.latitude, data.longitude, elevationApiAppId)).ConfigureAwait(false);
+                    string.Format(elevationApiUri, data.Latitude, data.Longitude, elevationApiAppId)).ConfigureAwait(false);
                 try {
                     JObject root = JObject.Parse((string)(response as JsonResult).Value);
-                    data.elevation = root["results"][0].Value<string>("elevation");
-                    elevationsByZip[zipcode] = data.elevation;
+                    data.Elevation = root["results"][0].Value<string>("elevation");
+                    _elevationsByZip[zipcode] = data.Elevation;
                 }
                 catch (JsonReaderException e) {
                     throw new WeatherRestException(

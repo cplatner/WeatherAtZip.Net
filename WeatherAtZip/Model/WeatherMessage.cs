@@ -2,27 +2,27 @@ namespace WeatherAtZip.Model
 {
     public class WeatherMessage
     {
-        public string message { get; private set; }
-        public string city { get; private set; }
-        public string zipcode { get; private set; }
-        public double temperature { get; private set; }
-        public string timezone { get; private set; }
-        public double elevation { get; private set; }
+        public string Message { get; private set; }
+        public string City { get; private set; }
+        public string Zipcode { get; private set; }
+        public double Temperature { get; private set; }
+        public string Timezone { get; private set; }
+        public double Elevation { get; private set; }
 
         public WeatherMessage(WeatherData weatherData)
         {
-            this.city = weatherData.city;
-            this.zipcode = weatherData.zipcode;
-            this.temperature = double.Parse(weatherData.temperature);
-            this.timezone = weatherData.timezone;
-            this.elevation = double.Parse(weatherData.elevation);
+            this.City = weatherData.City;
+            this.Zipcode = weatherData.Zipcode;
+            this.Temperature = double.Parse(weatherData.Temperature);
+            this.Timezone = weatherData.Timezone;
+            this.Elevation = double.Parse(weatherData.Elevation);
 
-            this.message = string.Format(
+            this.Message = string.Format(
                     "At the location {0}, the temperature is {1:F1}F, the timezone is {2}, and the elevation is {3:F1}m",
-                    weatherData.city,
-                    double.Parse(weatherData.temperature),
-                    weatherData.timezone,
-                    double.Parse(weatherData.elevation));
+                    weatherData.City,
+                    double.Parse(weatherData.Temperature),
+                    weatherData.Timezone,
+                    double.Parse(weatherData.Elevation));
         }
     }
 }

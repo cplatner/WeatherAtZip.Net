@@ -5,12 +5,12 @@ namespace WeatherAtZip.Model
     /// </Summary>
     public class WeatherData
     {
-        public string zipcode { get; set; }
-        public string city { get; set; }
-        public string temperature { get; set; }
-        public string timezone { get; set; }
-        public string elevation { get; set; }
-        public string latitude { get; set; }
-        public string longitude { get; set; }
+        public string Zipcode { get; set; }
+        public string City { get; set; }
+        public string Temperature { get; set; }
+        public string Timezone { get; set; }
+        public string Elevation { get; set; }
+        public string Latitude { get; set; }
+        public string Longitude { get; set; }
     }
 }
