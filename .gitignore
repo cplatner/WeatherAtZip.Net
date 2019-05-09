@@ -1,0 +1,11 @@
+# Directories
+**/bin
+**/obj
+**/packages
+**/.vs
+# For doxygen
+**/html/*
+
+# Files
+*.csproj.user
+*.vbproj.user
